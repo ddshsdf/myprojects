@@ -1,0 +1,322 @@
+// customer.blade.php
+
+@extends('layouts.main')
+
+@section('main-container')
+
+<?php
+  $customerDetails = isset($customerdetails) && count($customerdetails) > 0?$customerdetails:'';
+
+  $name = '';
+  $email = '';
+  $address = '';
+  $password = '';
+  $msg = 'Add User';
+  $url = 'datas';
+  $id = '';
+  if(count($customerdetails)>0){
+  $name = $customerdetails['name'];
+  $email = $customerdetails['email'];
+  $address = $customerdetails['address'];
+  $password = $customerdetails['password'];
+  $id = $customerdetails['id'];
+  $msg = 'Edit User';
+  $url = 'updateuser';
+  }
+
+?>
+
+@section('main-container')
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+  </head>
+  <body>
+   <div class="container mt-5">
+  <center><h2>{{$msg}}</h2></center>
+  <form action={{route($url)}} method="post">
+ @csrf
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Name</label>
+    <input type="text" class="form-control" id="name" name="name" value="{{$name}}">
+    <span class="text-danger">
+    @error('name')
+    {{$message}}
+     @enderror
+    </span>
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Email</label>
+    <input type="email" class="form-control" id="email" name="email" value="{{$email}}">
+    <span class="text-danger">
+    @error('email')
+    {{$message}}
+     @enderror
+    </span>
+  </div>
+   <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Address</label>
+    <input type="text" class="form-control" id="address" name="address" value="{{$address}}">
+    <span class="text-danger">
+    @error('address')
+    {{$message}}
+     @enderror
+    </span>
+  </div>
+   <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Password</label>
+    <input type="password" class="form-control" id="password" name="password" value="{{$password}}">
+    <span class="text-danger">
+    @error('password')
+    {{$message}}
+     @enderror
+    </span>
+  </div>
+    <input type="text" class="form-control" id="id" name="id" value="{{$id}}" style="display:none;">
+  
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+</div>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+  </body>
+</html>
+
+@endsection
+
+
+// Customer-view.blade.php
+
+@extends('layouts.main')
+
+@section('main-container')
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <title>Hello, world!</title>
+  </head>
+  <body>
+    <div class="container mt-5">
+    <form>
+    <div class="form-group">
+    <input type="search" name="search" id="" class="form-control" placeholder="Search by name or email" value=''>
+    <button class="btn btn-primary mt-2">Search</button>
+    
+    <a href = "{{'customer-view'}}">
+    <button class="btn btn-primary mt-2" type="button">Reset</button></a>
+    </div>
+    </form>
+    <a href="{{'/add'}}">
+    <button class="btn btn-primary d-inline-block mt-5 float-right">Add User</button></a>
+    <table class="table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Address</th>
+      <th>Password</th>
+      <th>Actions</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+  @for($i=0;$i<count($customerdetails);$i++)
+ 
+  
+    <tr>
+      <td>{{ $customerdetails[$i]->name }}</td>
+      <td>{{ $customerdetails[$i]->email}}</td>
+      <td>{{ $customerdetails[$i]->address}}</td>
+      <td>{{ $customerdetails[$i]->password}}</td>
+     {{-- <td>{!! $customerdetails[$i]->password !!}</td>--}}
+      {{-- <a href="{{url('/delete')}}"> --}}
+      <td>
+      <a href="{{route('delete',['id' => $customerdetails[$i]->id])}}">
+      <button class="btn btn-danger">Delete</button></a>
+      
+      <a href="{{route('edit',['id' => $customerdetails[$i]->id])}}">
+      <button class="btn btn-primary">Edit</button></a>
+      </td>
+    </tr>
+@endfor
+  </tbody>
+</table>
+ </div>
+
+   
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+
+   
+  </body>
+</html>
+
+@endsection
+
+
+//  web.php
+
+
+ Route::any('/',[DemoController::class,'registerdata']); 
+ Route::any('/add',[DemoController::class,'registerdata'])->name('add'); 
+
+
+
+
+ Route::any('/datas',[DemoController::class,'storedatat'])->name('datas'); 
+ Route::get('/customer-view',[DemoController::Class,'view'])->name('customer-view');
+ Route::any('/delete/{id}',[DemoController::Class,'delete'])->name('delete');
+ Route::any('/edit/{id}',[DemoController::Class,'edit'])->name('edit');
+ //Route::any('/update/{id}',[DemoController::Class,'update'])->name('update');
+ Route::any('/updateuser',[DemoController::Class,'updateuser'])->name('updateuser');
+ Route::any('/search',[DemoController::Class,'view'])->name('search');
+
+
+// DemoController.php
+
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use DB;
+
+class DemoController extends Controller
+{
+    public function registerdata(){
+        // echo "test";exit;
+       // $url = url('/customer');
+      //  $title = "Customer Registration";
+      //  $data = compact('url','title');
+     // echo "done";
+        return view('customer')->with('customerdetails',array());
+    }
+
+    public function storedatat(Request $request){
+        // dd($request);
+        // echo "<pre>";print_r($request);exit;
+        $insertDATA =DB::table('customers_table')->insert(
+            ['name'=>$request->name,
+             'email'=>$request->email,
+             'address'=>$request->address,
+             'password'=>md5($request->password)]);
+             return redirect('customer-view');
+        if($insertDATA){
+            return "done";
+        }
+    }
+   
+
+   public function view(Request $request){
+       $search = isset($request['search'])  && $request['search'] != ''?$request['search']:'';
+       if($search != ""){
+           $customers = DB::table('customers_table')->where('name','LIKE',"%$search%")->orwhere('email','LIKE',"%$search%")->get()->toArray();
+        }else{
+            $customers = DB::table('customers_table')->get()->toArray();
+        }
+        // echo "<pre>";print_r($customers);exit;
+      return view('customer-view')->with('customerdetails',$customers);
+   }
+
+   public function delete($id){
+        // echo "<pre>";print_r($id);exit;
+        $customersdel = DB::table('customers_table')->whereId($id)->delete();
+
+        if($customersdel){
+            return redirect('view');
+        }else{
+            return "Not Deleted";
+        }
+   }
+
+   public function edit($id){
+
+    $customeredit = DB::table('customers_table')->whereId($id)->get()->toArray();
+    $customeredit = (array) current($customeredit);
+    //echo "<pre>";
+    //print_r($customeredit);
+    //exit;
+
+    return view('customer')->with('customerdetails',$customeredit);
+    // if(($customeredit)){
+    //     //not found
+    //     return redirect('customer');
+    // }
+    // else{
+    //     $url = ('/update') . "/" . $id;
+    //     $title = "Update Customer";
+    //     $data = compact('customer','url','title');
+    //     return view('register')->with($data);
+    // }
+    
+    /*$customersedit = DB::table('customers_table')->whereId($id)->edit();
+
+    if($customeredit){
+        return redirect('register');
+    }
+    else{
+        return "Not Updated";
+    }
+
+   }   */
+
+   }
+
+/*
+   public function country(){
+    // echo "test";exit;
+    return view('country');
+}
+
+*/
+
+    public function updateuser(Request $request){
+        // echo "<pre>";print_r($request->all());exit;
+        $requestData = $request->all();
+
+        $updateuser = DB::table('customers_table')->whereId($requestData['id'])->update([
+            'name'=>$request->name,
+            'email'=>$request->email,
+            'address'=>$request->address,
+            'password'=>md5($request->password)
+        ]);
+        // return redirect('view');
+        // if($requestData){
+        //     return "done";
+        // }
+        if($updateuser){
+            return redirect('customer-view');
+        }else{
+            return "fail";
+        }
+    }
+    }
+
+
+Database Name - Laravel
+table name - customers_table
+
+name
+email
+address
+password
+
+
+
